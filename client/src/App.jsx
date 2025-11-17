@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import {
   Navigate,
   Route,
@@ -12,43 +12,63 @@ import { UserContext } from "./context/UserContext.js";
 import "./index.css";
 import "./styles/custom.css";
 
-// Starting pages
+// Eager load
 import ReVerificationModal from "./components/User/ReVerificationModal.jsx";
 import Login from "./pages/auth/Login.jsx";
 import Register from "./pages/auth/Register.jsx";
-
-// User pages
+import AdminNavbar from "./pages/navbars/AdminNavbar.jsx";
 import UserNavbar from "./pages/navbars/UserNavbar.jsx";
-import About from "./pages/users/About.jsx";
-import Archives from "./pages/users/Archives.jsx";
-import FAQ from "./pages/users/Faq.jsx";
 import ForgotPassword from "./pages/users/ForgotPassword.jsx";
-import Forum from "./pages/users/Forum.jsx";
-import Home from "./pages/users/Home.jsx";
-import Profile from "./pages/users/Profile.jsx";
-import Projects from "./pages/users/Projects.jsx";
 import ResetPassword from "./pages/users/ResetPassword.jsx";
-import Settings from "./pages/users/Settings.jsx";
-import Skills from "./pages/users/Skills.jsx";
-import SkillsAssessment from "./pages/users/SkillsAssessment.jsx";
 import VerifyEmailNotice from "./pages/users/VerifyEmailNotice.jsx";
 import VerifyEmailSuccess from "./pages/users/VerifyEmailSuccess.jsx";
-import ViewAllNotifications from "./pages/users/ViewAllNotifications.jsx";
-import ViewProject from "./pages/users/ViewProject.jsx";
+
+// User pages
+const About = lazy(() => import("./pages/users/About.jsx"));
+const Archives = lazy(() => import("./pages/users/Archives.jsx"));
+const FAQ = lazy(() => import("./pages/users/Faq.jsx"));
+const Forum = lazy(() => import("./pages/users/Forum.jsx"));
+const Home = lazy(() => import("./pages/users/Home.jsx"));
+const Profile = lazy(() => import("./pages/users/Profile.jsx"));
+const Projects = lazy(() => import("./pages/users/Projects.jsx"));
+const Settings = lazy(() => import("./pages/users/Settings.jsx"));
+const Skills = lazy(() => import("./pages/users/Skills.jsx"));
+const SkillsAssessment = lazy(
+  () => import("./pages/users/SkillsAssessment.jsx")
+);
+const ViewAllNotifications = lazy(
+  () => import("./pages/users/ViewAllNotifications.jsx")
+);
+const ViewProject = lazy(() => import("./pages/users/ViewProject.jsx"));
 
 // Admin pages
-import AnnouncementPanel from "./pages/admin/AnnouncementPanel.jsx";
-import CommunityGuidelines from "./pages/admin/CommunityGuidelines.jsx";
-import ExcelUploadPanel from "./pages/admin/ExcelUploadPanel.jsx";
-import ForumViolations from "./pages/admin/ForumViolations.jsx";
-import ProjectViolations from "./pages/admin/ProjectViolations.jsx";
-import Reports from "./pages/admin/Reports.jsx";
-import SemesterSettings from "./pages/admin/SemesterSettings.jsx";
-import UploadedProjects from "./pages/admin/UploadedProjects.jsx";
-import UserContributions from "./pages/admin/UserContributions.jsx";
-import UserRoleManagement from "./pages/admin/UserRoleManagement.jsx";
-import UserViolations from "./pages/admin/UserViolations.jsx";
-import AdminNavbar from "./pages/navbars/AdminNavbar.jsx";
+const AnnouncementPanel = lazy(
+  () => import("./pages/admin/AnnouncementPanel.jsx")
+);
+const CommunityGuidelines = lazy(
+  () => import("./pages/admin/CommunityGuidelines.jsx")
+);
+const ExcelUploadPanel = lazy(
+  () => import("./pages/admin/ExcelUploadPanel.jsx")
+);
+const ForumViolations = lazy(() => import("./pages/admin/ForumViolations.jsx"));
+const ProjectViolations = lazy(
+  () => import("./pages/admin/ProjectViolations.jsx")
+);
+const Reports = lazy(() => import("./pages/admin/Reports.jsx"));
+const SemesterSettings = lazy(
+  () => import("./pages/admin/SemesterSettings.jsx")
+);
+const UploadedProjects = lazy(
+  () => import("./pages/admin/UploadedProjects.jsx")
+);
+const UserContributions = lazy(
+  () => import("./pages/admin/UserContributions.jsx")
+);
+const UserRoleManagement = lazy(
+  () => import("./pages/admin/UserRoleManagement.jsx")
+);
+const UserViolations = lazy(() => import("./pages/admin/UserViolations.jsx"));
 
 axios.defaults.baseURL = "http://localhost:5000";
 axios.defaults.withCredentials = true;
@@ -113,6 +133,12 @@ export default function App() {
       });
   }, [location.pathname, navigate]);
 
+  const LoadingFallback = () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <span className="loading loading-spinner loading-lg text-primary"></span>
+    </div>
+  );
+
   return (
     <UserContext.Provider value={{ user, setUser, loading }}>
       {user && needsReVerification && (
@@ -128,96 +154,104 @@ export default function App() {
         />
       )}
 
-      <Routes>
-        {/* STARTING ROUTES */}
-        <Route index element={<Login />} />
-        <Route path="login" element={<Login />} />
-        <Route path="register" element={<Register />} />
-        <Route path="/verify-email-notice" element={<VerifyEmailNotice />} />
-        <Route path="/verify-email" element={<VerifyEmailSuccess />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          {/* STARTING ROUTES */}
+          <Route index element={<Login />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="/verify-email-notice" element={<VerifyEmailNotice />} />
+          <Route path="/verify-email" element={<VerifyEmailSuccess />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-        {/* USER ROUTES - Navbar included */}
-        <Route element={<UserNavbar />}>
-          {/* PUBLIC PROFILE - Anyone can view (with navbar) */}
-          <Route path="profile/:username" element={<Profile />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-
-        {/* PROTECTED USER ROUTES */}
-        <Route
-          element={
-            <ProtectedRouter
-              user={user}
-              role="user"
-              loading={loading}
-              redirectTo="/login"
-            />
-          }
-        >
+          {/* USER ROUTES - Navbar included */}
           <Route element={<UserNavbar />}>
-            <Route path="home" element={<Home />} />
-            <Route path="faq" element={<FAQ />} />
-            <Route path="about" element={<About />} />
-            <Route path="forum" element={<Forum />} />
-            <Route path="projects" element={<Projects />} />
-            <Route path="skills" element={<Skills />} />
-            <Route path="/skills/assessment" element={<SkillsAssessment />} />
-            <Route
-              path="all-notifications"
-              element={<ViewAllNotifications />}
-            />
-            <Route path="settings" element={<Settings />} />
-            <Route path="projects/:projectId" element={<ViewProject />} />
-            <Route path="archives" element={<Archives />} />
+            {/* PUBLIC PROFILE - Anyone can view (with navbar) */}
+            <Route path="profile/:username" element={<Profile />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
-        </Route>
 
-        {/* ADMIN ROUTES */}
-        <Route
-          element={
-            <ProtectedRouter
-              user={user}
-              role="admin"
-              loading={loading}
-              redirectTo="/login"
-            />
-          }
-        >
-          <Route path="/admin" element={<AdminNavbar />}>
-            <Route path="reports" element={<Reports />} />
-            <Route path="announcements" element={<AnnouncementPanel />} />
-            <Route path="project-violations" element={<ProjectViolations />} />
-            <Route path="user-violations" element={<UserViolations />} />
-            <Route path="projects" element={<UploadedProjects />} />
-            <Route path="forum-violations" element={<ForumViolations />} />
-            <Route path="guidelines" element={<CommunityGuidelines />} />
-            <Route path="user-roles" element={<UserRoleManagement />} />
-            <Route path="user-contributions" element={<UserContributions />} />
-            <Route path="semester-settings" element={<SemesterSettings />} />
-            <Route path="excel-upload" element={<ExcelUploadPanel />} />
+          {/* PROTECTED USER ROUTES */}
+          <Route
+            element={
+              <ProtectedRouter
+                user={user}
+                role="user"
+                loading={loading}
+                redirectTo="/login"
+              />
+            }
+          >
+            <Route element={<UserNavbar />}>
+              <Route path="home" element={<Home />} />
+              <Route path="faq" element={<FAQ />} />
+              <Route path="about" element={<About />} />
+              <Route path="forum" element={<Forum />} />
+              <Route path="projects" element={<Projects />} />
+              <Route path="skills" element={<Skills />} />
+              <Route path="/skills/assessment" element={<SkillsAssessment />} />
+              <Route
+                path="all-notifications"
+                element={<ViewAllNotifications />}
+              />
+              <Route path="settings" element={<Settings />} />
+              <Route path="projects/:projectId" element={<ViewProject />} />
+              <Route path="archives" element={<Archives />} />
+            </Route>
           </Route>
-        </Route>
 
-        {/* FALLBACK - Redirect to appropriate page based on role */}
-        <Route
-          path="*"
-          element={
-            loading ? (
-              <span className="loading loading-spinner text-primary"></span>
-            ) : user ? (
-              user.role === "admin" ? (
-                <Navigate to="/admin" />
+          {/* ADMIN ROUTES */}
+          <Route
+            element={
+              <ProtectedRouter
+                user={user}
+                role="admin"
+                loading={loading}
+                redirectTo="/login"
+              />
+            }
+          >
+            <Route path="/admin" element={<AdminNavbar />}>
+              <Route path="reports" element={<Reports />} />
+              <Route path="announcements" element={<AnnouncementPanel />} />
+              <Route
+                path="project-violations"
+                element={<ProjectViolations />}
+              />
+              <Route path="user-violations" element={<UserViolations />} />
+              <Route path="projects" element={<UploadedProjects />} />
+              <Route path="forum-violations" element={<ForumViolations />} />
+              <Route path="guidelines" element={<CommunityGuidelines />} />
+              <Route path="user-roles" element={<UserRoleManagement />} />
+              <Route
+                path="user-contributions"
+                element={<UserContributions />}
+              />
+              <Route path="semester-settings" element={<SemesterSettings />} />
+              <Route path="excel-upload" element={<ExcelUploadPanel />} />
+            </Route>
+          </Route>
+
+          {/* FALLBACK - Redirect to appropriate page based on role */}
+          <Route
+            path="*"
+            element={
+              loading ? (
+                <span className="loading loading-spinner text-primary"></span>
+              ) : user ? (
+                user.role === "admin" ? (
+                  <Navigate to="/admin" />
+                ) : (
+                  <Navigate to="/home" />
+                )
               ) : (
-                <Navigate to="/home" />
+                <Navigate to="/login" />
               )
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
-      </Routes>
+            }
+          />
+        </Routes>
+      </Suspense>
     </UserContext.Provider>
   );
 }

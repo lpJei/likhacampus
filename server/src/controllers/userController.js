@@ -5,6 +5,7 @@ import cloudinary from "../config/cloudinary.js";
 import AdminSettings from "../models/AdminSettings.js";
 import ForumComment from "../models/ForumComment.js";
 import ForumPost from "../models/ForumPost.js";
+import Notification from "../models/Notification.js";
 import Project from "../models/Project.js";
 import StudentDatabase from "../models/StudentDatabase.js";
 import User from "../models/User.js";
@@ -23,6 +24,7 @@ export const registerUser = async (req, res) => {
       email,
       studentNumber,
       yearLevel,
+      program,
       password,
     } = req.body;
 
@@ -35,6 +37,7 @@ export const registerUser = async (req, res) => {
       !email ||
       !studentNumber ||
       !yearLevel ||
+      !program ||
       !password
     ) {
       return res.status(400).json({ message: "All fields are required." });
@@ -165,6 +168,7 @@ export const registerUser = async (req, res) => {
       email,
       studentNumber,
       yearLevel,
+      program,
       password: hash,
       avatar: {
         url:
@@ -274,7 +278,7 @@ export const loginUser = async (req, res) => {
     if (user.lockUntil && user.lockUntil <= Date.now()) {
       user.loginAttempts = 0;
       user.lockUntil = undefined;
-      await user.save();
+      await user.save({ validateBeforeSave: false }); // ADD THIS
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -291,7 +295,7 @@ export const loginUser = async (req, res) => {
         user.loginAttempts = 0;
         user.lockCount = (user.lockCount || 0) + 1;
 
-        await user.save();
+        await user.save({ validateBeforeSave: false }); // ADD THIS
 
         const minutes = Math.ceil(finalLockTime / 60000);
         return res.status(423).json({
@@ -299,7 +303,7 @@ export const loginUser = async (req, res) => {
         });
       }
 
-      await user.save();
+      await user.save({ validateBeforeSave: false }); // ADD THIS
 
       const attemptsLeft = MAX_LOGIN_ATTEMPTS - user.loginAttempts;
       return res.status(401).json({
@@ -332,7 +336,7 @@ export const loginUser = async (req, res) => {
       user.loginAttempts = 0;
       user.lockUntil = undefined;
       user.lockCount = 0;
-      await user.save();
+      await user.save({ validateBeforeSave: false }); // ADD THIS
 
       console.log(`Account reactivated: ${user.email}`);
     }
@@ -340,7 +344,7 @@ export const loginUser = async (req, res) => {
     user.loginAttempts = 0;
     user.lockUntil = undefined;
     user.lockCount = 0;
-    await user.save();
+    await user.save({ validateBeforeSave: false }); // ADD THIS
 
     req.session.userId = user._id;
     const userObj = {
@@ -702,10 +706,18 @@ export const reVerifyUser = async (req, res) => {
   try {
     const userId = req.session.userId;
     const registrationForm = req.file;
+    const { yearLevel } = req.body; // ADD THIS
 
     if (!registrationForm) {
       return res.status(400).json({
         message: "Registration form (PDF) is required.",
+      });
+    }
+
+    // ADD THIS VALIDATION
+    if (!yearLevel) {
+      return res.status(400).json({
+        message: "Year level is required.",
       });
     }
 
@@ -770,6 +782,7 @@ export const reVerifyUser = async (req, res) => {
     user.registrationFormVerified = true;
     user.needsReVerification = false;
     user.reVerificationReason = "";
+    user.yearLevel = yearLevel; // ADD THIS - Update the year level
 
     await user.save();
 
@@ -779,6 +792,7 @@ export const reVerifyUser = async (req, res) => {
         needsReVerification: false,
         registrationSemester: user.registrationSemester,
         registrationAcademicYear: user.registrationAcademicYear,
+        yearLevel: user.yearLevel, // ADD THIS to response
       },
     });
   } catch (error) {

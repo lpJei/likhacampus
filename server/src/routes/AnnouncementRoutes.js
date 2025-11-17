@@ -15,7 +15,7 @@ router.get("/:id", getAnnouncement);
 
 router.use(requireAdmin);
 router.post("/", uploadAnnouncement.single("image"), createAnnouncement);
-router.put("/:id", updateAnnouncement);
+router.put("/:id", uploadAnnouncement.single("image"), updateAnnouncement);
 router.delete("/:id", deleteAnnouncement);
 
 export default router;

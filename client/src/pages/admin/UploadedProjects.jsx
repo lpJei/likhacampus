@@ -258,7 +258,11 @@ const ProjectManagementPanel = () => {
                         )}
                       </div>
                     </td>
-                    <td className="font-medium truncate">{project.title}</td>
+                    <td className="font-medium">
+                      <div className="max-w-xs truncate" title={project.title}>
+                        {project.title}
+                      </div>
+                    </td>
                     <td>
                       <div className="flex items-center gap-2">
                         <div className="avatar">

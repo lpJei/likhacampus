@@ -19,6 +19,21 @@ const UserSchema = new mongoose.Schema(
       required: true,
       enum: ["1st Year", "2nd Year", "3rd Year", "4th Year"],
     },
+    program: {
+      type: String,
+      required: false,
+      enum: [
+        "Bachelor of Secondary Education",
+        "Bachelor of Technical Vocational Teacher Education",
+        "BS Business Management",
+        "BS Computer Engineering",
+        "BS Computer Science",
+        "BS Electrical Engineering",
+        "BS Hospitality Management",
+        "BS Industrial Education",
+        "BS Information Technology",
+      ],
+    },
     password: { type: String, required: true, minLength: 8 },
     registrationFormPath: {
       url: String,
@@ -42,15 +57,13 @@ const UserSchema = new mongoose.Schema(
       trim: true,
       minLength: 2,
     },
-    headerColor: {
-      type: String,
-      default: "#5865F2",
-      validate: {
-        validator: function (v) {
-          return /^#[0-9A-F]{6}$/i.test(v);
-        },
-        message: "Invalid hex color format",
+    headerImage: {
+      url: {
+        type: String,
+        default:
+          "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920",
       },
+      publicId: String,
     },
     reports: [
       {

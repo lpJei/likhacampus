@@ -42,7 +42,7 @@ const registrationFormStorage = new CloudinaryStorage({
 const avatarStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "likhow/users/avatars",
+    folder: "likhacampus/users/avatars",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
     transformation: [
       { width: 512, height: 512, crop: "fill", gravity: "face" },
@@ -52,10 +52,24 @@ const avatarStorage = new CloudinaryStorage({
   },
 });
 
+// NEW: Header image storage for profile covers
+const headerImageStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "likhacampus/users/headers",
+    allowed_formats: ["jpg", "jpeg", "png", "webp"],
+    transformation: [
+      { width: 1500, height: 500, crop: "fill" },
+      { quality: "auto:good" },
+      { fetch_format: "auto" },
+    ],
+  },
+});
+
 const imageStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "likhow/projects/images",
+    folder: "likhacampus/projects/images",
     allowed_formats: ["jpg", "jpeg", "png", "webp"],
     transformation: [
       { width: 1920, height: 1080, crop: "limit" },
@@ -68,7 +82,7 @@ const imageStorage = new CloudinaryStorage({
 const videoStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "likhow/projects/videos",
+    folder: "likhacampus/projects/videos",
     resource_type: "video",
     allowed_formats: ["mp4", "mov", "avi", "mkv"],
     transformation: [
@@ -112,6 +126,20 @@ export const uploadAvatar = multer({
   limits: { fileSize: 5 * 1024 * 1024 },
 });
 
+// NEW: Header image uploader
+export const uploadHeaderImage = multer({
+  storage: headerImageStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const allowedMimes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only JPEG, PNG, and WebP images are allowed"), false);
+    }
+  },
+});
+
 export const uploadImage = multer({
   storage: imageStorage,
   limits: { fileSize: 10 * 1024 * 1024 },
@@ -135,7 +163,7 @@ export const uploadAnnouncement = multer({
 export const uploadToCloudinary = async (filePath, folder, isVideo = false) => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: `likhow/projects/${folder}`,
+      folder: `likhacampus/projects/${folder}`,
       resource_type: isVideo ? "video" : "image",
       transformation: isVideo
         ? [

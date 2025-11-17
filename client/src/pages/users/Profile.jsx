@@ -26,7 +26,6 @@ const Profile = () => {
   const [error, setError] = useState(null);
   const [activeModal, setActiveModal] = useState(null);
   const [activeTab, setActiveTab] = useState("projects");
-  const [headerColor, setHeaderColor] = useState("#5865F2");
 
   const handleOpenModal = (modalName) => setActiveModal(modalName);
   const handleCloseModal = () => setActiveModal(null);
@@ -152,23 +151,6 @@ const Profile = () => {
     if (profile) fetchAssessment();
   }, [profile]);
 
-  const handleHeaderColorChange = async (newColor) => {
-    try {
-      setProfile((prev) => ({ ...prev, headerColor: newColor }));
-
-      await axios.patch(
-        `${API_URL}/user/profile`,
-        { headerColor: newColor },
-        { withCredentials: true }
-      );
-
-      showAlert("Header updated successfully!", "success");
-    } catch (error) {
-      console.error("Failed to save header color:", error);
-      setProfile((prev) => ({ ...prev, headerColor: profile.headerColor }));
-    }
-  };
-
   const handleUploadProject = (newProject) => {
     setProjects((prev) => [newProject, ...prev]);
     handleCloseModal();
@@ -225,7 +207,7 @@ const Profile = () => {
     <>
       <div className="container mx-auto mt-4 max-w-5xl">
         <div className="px-2 md:px-2 lg:px-4 py-6 max-w-7xl mx-auto">
-          {/* PROFILE CARD */}
+          {/* PROFILE CARD (includes header image) */}
           <ProfileCard
             name={`${profile.firstName} ${profile.lastName}`}
             bio={profile.bio || "Set your bio"}
@@ -237,8 +219,7 @@ const Profile = () => {
             forumPostCount={forumPosts?.length || 0}
             onUpload={() => handleOpenModal("uploadProject")}
             isOwnProfile={currentUser?._id === profile._id}
-            headerColor={profile.headerColor || "#5865F2"}
-            onHeaderColorChange={handleHeaderColorChange}
+            headerImage={profile.headerImage}
           />
 
           {/* TWO COLUMN LAYOUT */}

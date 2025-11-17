@@ -1,4 +1,4 @@
-import { Check, Link2 } from "lucide-react"; // Add this import
+import { Check, Link2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default_avatar.jpg";
@@ -13,8 +13,7 @@ const ProfileCard = ({
   userId,
   onUpload,
   isOwnProfile,
-  headerColor = "#5865F2",
-  onHeaderColorChange,
+  headerImage,
 }) => {
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
@@ -40,28 +39,21 @@ const ProfileCard = ({
     }
   };
 
+  // Default header image if none provided
+  const defaultHeaderImage =
+    "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920";
+
   return (
     <>
       {/* COVER/HEADER SECTION */}
       <div className="card shadow-md bg-base-100 mb-4 w-full">
-        {/* HEADER WITH COLOR PICKER */}
-        <div
-          className="h-48 w-full rounded-t-lg relative"
-          style={{ backgroundColor: headerColor }}
-        >
-          {/* COLOR PICKER (Own Profile) */}
-          {isOwnProfile && onHeaderColorChange && (
-            <div className="absolute top-4 right-4">
-              <label className="cursor-pointer" title="Change header color">
-                <input
-                  type="color"
-                  value={headerColor}
-                  onChange={(e) => onHeaderColorChange(e.target.value)}
-                  className="w-10 h-10 rounded-lg cursor-pointer border-2 border-white shadow-lg hover:scale-110 transition"
-                />
-              </label>
-            </div>
-          )}
+        {/* HEADER IMAGE */}
+        <div className="h-48 w-full rounded-t-lg relative overflow-hidden">
+          <img
+            src={headerImage?.url || defaultHeaderImage}
+            alt="Profile cover"
+            className="w-full h-full object-cover"
+          />
 
           {/* REPORT USER ELLIPSIS (Other's Profile) */}
           {!isOwnProfile && (
@@ -71,34 +63,38 @@ const ProfileCard = ({
           )}
         </div>
 
-        {/* PROFILE */}
+        {/* PROFILE CONTENT */}
         <div className="p-6 relative">
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-4 -mt-20 md:-mt-16">
-            {/* AVATAR */}
+          {/* CENTERED AVATAR */}
+          <div className="flex flex-col items-center -mt-20">
             <img
               src={avatar?.url || defaultAvatar}
               alt="Profile avatar"
-              className="rounded-full w-32 h-32 md:w-40 md:h-40 object-cover border-4 border-base-100 shadow-lg relative z-10"
+              className="rounded-full w-32 h-32 md:w-36 md:h-36 object-cover border-4 border-base-100 shadow-xl relative z-10"
             />
 
-            {/* NAME/ BIO + BADGE */}
-            <div className="flex-1 text-center md:text-left md:mt-16 min-w-0">
-              <h2 className="text-2xl font-bold break-words whitespace-pre-wrap">
+            {/* NAME & USERNAME */}
+            <div className="text-center mt-4">
+              <h2 className="text-2xl md:text-3xl font-bold break-words">
                 {name || "Your Name"}
               </h2>
 
               {/* FEATURED ARTIST BADGE */}
-              {userId && <FeaturedArtistBadge userId={userId} />}
+              <div className="flex justify-center">
+                {userId && <FeaturedArtistBadge userId={userId} />}
+              </div>
 
-              {username && <p className="text-gray-600">@{username}</p>}
-              <p className="text-gray-700 mt-1 max-w-2xl break-words whitespace-pre-wrap">
-                {bio || "No bio yet."}
-              </p>
+              {username && <p className="text-gray-600 mt-1">@{username}</p>}
             </div>
 
-            {/* BUTTONS */}
+            {/* BIO */}
+            <p className="text-gray-700 mt-3 max-w-2xl text-center break-words whitespace-pre-wrap">
+              {bio || "No bio yet."}
+            </p>
+
+            {/* BUTTONS (Own Profile) */}
             {isOwnProfile && (
-              <div className="flex flex-wrap gap-2 md:mt-16 justify-center md:justify-start shrink-0">
+              <div className="flex flex-wrap gap-2 mt-6 justify-center">
                 <button className="btn btn-primary" onClick={onUpload}>
                   Upload Project
                 </button>

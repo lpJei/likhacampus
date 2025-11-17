@@ -1,11 +1,12 @@
 import express from "express";
-import { uploadAvatar } from "../config/cloudinary.js";
+import { uploadAvatar, uploadHeaderImage } from "../config/cloudinary.js";
 import {
   changePassword,
   getCurrentProfile,
   getProfileByUsername,
   searchUsers,
   updateProfile,
+  uploadHeaderImage as uploadHeaderImageController,
 } from "../controllers/profileController.js";
 import {
   deactivateAccount,
@@ -56,6 +57,12 @@ router.patch(
   uploadAvatar.single("avatar"),
   validate(updateProfileSchema),
   updateProfile
+);
+router.put(
+  "/header-image",
+  requireAuth,
+  uploadHeaderImage.single("headerImage"),
+  uploadHeaderImageController
 );
 router.put("/change-password", changePassword);
 router.post("/account/deactivate", requireAuth, deactivateAccount);

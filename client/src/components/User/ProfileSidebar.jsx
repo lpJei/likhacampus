@@ -51,11 +51,14 @@ const ProfileSidebar = ({
         <div className="card shadow-md bg-base-100 p-4">
           <h3 className="font-bold text-lg mb-3">Information</h3>
           <div className="space-y-2 text-sm">
-            {user?.studentNumber && (
+            {user?.program && (
               <p className="flex justify-between">
-                <span className="font-semibold">Student Number:</span>
-                <span className="badge badge-outline">
-                  {user.studentNumber}
+                <span className="font-semibold">Student Program:</span>
+                <span
+                  className="badge badge-outline truncate max-w-[200px]"
+                  title={user.program}
+                >
+                  {user.program}
                 </span>
               </p>
             )}

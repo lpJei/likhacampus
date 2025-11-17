@@ -104,18 +104,39 @@ export const getAnnouncement = async (req, res) => {
 // ===== UPDATE ANNOUNCEMENT =====
 export const updateAnnouncement = async (req, res) => {
   try {
+    // Debug log to see what's in req.body
+    console.log("req.body:", req.body);
+    console.log("req.file:", req.file);
+
+    // Check if req.body exists
+    if (!req.body) {
+      return res.status(400).json({
+        error:
+          "Request body is missing. Make sure you're sending form data correctly.",
+      });
+    }
+
     const { title, content } = req.body;
+
     const announcement = await Announcement.findById(req.params.id);
 
     if (!announcement) {
       return res.status(404).json({ error: "Announcement not found" });
     }
 
+    // Handle image update
     if (req.file) {
+      // Delete old image from cloudinary
       if (announcement.image?.publicId) {
-        await cloudinary.uploader.destroy(announcement.image.publicId);
+        try {
+          await cloudinary.uploader.destroy(announcement.image.publicId);
+        } catch (cloudinaryError) {
+          console.error("Error deleting old image:", cloudinaryError);
+          // Continue even if deletion fails
+        }
       }
 
+      // Update with new image
       announcement.imageUrl = req.file.path;
       announcement.image = {
         url: req.file.path,
@@ -123,8 +144,9 @@ export const updateAnnouncement = async (req, res) => {
       };
     }
 
-    announcement.title = title || announcement.title;
-    announcement.content = content || announcement.content;
+    // Update title and content only if provided
+    if (title) announcement.title = title;
+    if (content) announcement.content = content;
 
     await announcement.save();
 
@@ -133,7 +155,10 @@ export const updateAnnouncement = async (req, res) => {
       .json({ message: "Announcement updated successfully", announcement });
   } catch (error) {
     console.error("Error updating announcement:", error);
-    res.status(500).json({ error: "Error updating announcement" });
+    res.status(500).json({
+      error: "Error updating announcement",
+      details: error.message,
+    });
   }
 };
 

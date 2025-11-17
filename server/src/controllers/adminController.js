@@ -172,6 +172,12 @@ export const updateSemesterSettings = async (req, res) => {
       settings.currentAcademicYear !== currentAcademicYear ||
       settings.currentSemester !== currentSemester;
 
+    // ===== CHECK IF ACADEMIC YEAR CHANGED =====
+    const academicYearChanged =
+      settings &&
+      settings.currentAcademicYear &&
+      settings.currentAcademicYear !== currentAcademicYear;
+
     if (!settings) {
       settings = new AdminSettings({
         currentAcademicYear,
@@ -185,6 +191,50 @@ export const updateSemesterSettings = async (req, res) => {
     }
 
     await settings.save();
+
+    // ===== AUTO-INCREMENT YEAR LEVELS IF ACADEMIC YEAR CHANGED =====
+    let promotionStats = { promoted: 0, graduated: 0 };
+    if (academicYearChanged) {
+      console.log("🎓 Academic year changed! Promoting students...");
+
+      // Get all non-alumni users
+      const users = await User.find({
+        isAlumni: { $ne: true },
+        isVerified: true,
+        role: "user",
+      });
+
+      for (const user of users) {
+        const currentYear = user.yearLevel;
+
+        switch (currentYear) {
+          case "1st Year":
+            user.yearLevel = "2nd Year";
+            promotionStats.promoted++;
+            break;
+          case "2nd Year":
+            user.yearLevel = "3rd Year";
+            promotionStats.promoted++;
+            break;
+          case "3rd Year":
+            user.yearLevel = "4th Year";
+            promotionStats.promoted++;
+            break;
+          case "4th Year":
+            // Mark as alumni
+            user.isAlumni = true;
+            user.graduationDate = new Date();
+            promotionStats.graduated++;
+            break;
+        }
+
+        await user.save();
+      }
+
+      console.log(
+        `✅ Year level progression complete: ${promotionStats.promoted} students promoted, ${promotionStats.graduated} students graduated`
+      );
+    }
 
     // ===== FLAG ALL USERS FOR RE-VERIFICATION =====
     if (isChanging) {
@@ -209,14 +259,27 @@ export const updateSemesterSettings = async (req, res) => {
       semester: currentSemester,
     });
 
+    // Build response message
+    let message = "Semester settings updated successfully!";
+    if (academicYearChanged) {
+      message = `Academic year changed! ${promotionStats.promoted} students promoted to next year level, ${promotionStats.graduated} students graduated. All users flagged for re-verification.`;
+    } else if (isChanging) {
+      message =
+        "Semester settings updated! All users flagged for re-verification.";
+    }
+
     res.json({
-      message: isChanging
-        ? "Semester settings updated! All users flagged for re-verification."
-        : "Semester settings updated successfully!",
+      message,
       settings,
       usersAffected: isChanging
         ? await User.countDocuments({ role: "user" })
         : 0,
+      ...(academicYearChanged && {
+        promotion: {
+          promoted: promotionStats.promoted,
+          graduated: promotionStats.graduated,
+        },
+      }),
     });
   } catch (error) {
     console.error("Update settings error:", error);

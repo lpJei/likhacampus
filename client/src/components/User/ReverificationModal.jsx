@@ -9,6 +9,7 @@ const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
   const { showAlert } = useAlert();
   const [registrationForm, setRegistrationForm] = useState(null);
   const [fileName, setFileName] = useState(null);
+  const [yearLevel, setYearLevel] = useState(""); // ADD THIS
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e) => {
@@ -35,8 +36,15 @@ const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
       return;
     }
 
+    // ADD THIS VALIDATION
+    if (!yearLevel) {
+      showAlert("Please select your current year level", "warning");
+      return;
+    }
+
     const formData = new FormData();
     formData.append("registrationForm", registrationForm);
+    formData.append("yearLevel", yearLevel); // ADD THIS
 
     setUploading(true);
     try {
@@ -81,6 +89,28 @@ const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* YEAR LEVEL DROPDOWN - ADD THIS */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text font-semibold">
+                  Current Year Level *
+                </span>
+              </label>
+              <select
+                className="select select-bordered w-full"
+                value={yearLevel}
+                onChange={(e) => setYearLevel(e.target.value)}
+                disabled={uploading}
+              >
+                <option value="">Select your year level</option>
+                <option value="1st Year">1st Year</option>
+                <option value="2nd Year">2nd Year</option>
+                <option value="3rd Year">3rd Year</option>
+                <option value="4th Year">4th Year</option>
+              </select>
+            </div>
+
+            {/* REGISTRATION FORM UPLOAD */}
             <div className="form-control">
               <label className="label">
                 <span className="label-text font-semibold">
@@ -113,7 +143,7 @@ const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
             <button
               type="submit"
               className="btn btn-primary w-full"
-              disabled={!registrationForm || uploading}
+              disabled={!registrationForm || !yearLevel || uploading}
             >
               {uploading ? (
                 <>

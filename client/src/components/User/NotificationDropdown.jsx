@@ -86,7 +86,6 @@ const NotificationDropdown = () => {
     switch (notification.type) {
       case "announcement":
         const announcementPath = `/home#announcement-${notification.targetId}`;
-        console.log("🔍 DROPDOWN - Announcement path:", announcementPath);
         return announcementPath;
 
       case "upvote":
@@ -288,7 +287,7 @@ const NotificationDropdown = () => {
               />
             </svg>
             {unreadCount > 0 && (
-              <span className="badge badge-xs royal-blue indicator-item">
+              <span className="badge badge-xs bg-royal-blue text-white indicator-item">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
@@ -298,7 +297,7 @@ const NotificationDropdown = () => {
         {/* DROPDOWN */}
         {isOpen && (
           <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden flex flex-col">
-            {/* Header */}
+            {/* HEADER */}
             <div className="p-4 border-b border-gray-200 flex justify-between items-center">
               <h3 className="font-semibold text-gray-800">Notifications</h3>
               {unreadCount > 0 && (

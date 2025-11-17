@@ -33,6 +33,7 @@ const Register = () => {
       email: "",
       studentNumber: "",
       yearLevel: "",
+      program: "",
       password: "",
     },
   });
@@ -91,6 +92,7 @@ const Register = () => {
     formData.append("email", data.email);
     formData.append("studentNumber", String(data.studentNumber));
     formData.append("yearLevel", data.yearLevel);
+    formData.append("program", data.program);
     formData.append("password", data.password);
     formData.append("registrationForm", registrationForm);
 
@@ -343,6 +345,7 @@ const Register = () => {
                       )}
                     </div>
 
+                    {/* YEAR LEVEL */}
                     <div className="flex-1">
                       <label
                         htmlFor="yearLevel"
@@ -372,6 +375,58 @@ const Register = () => {
                         </p>
                       )}
                     </div>
+                  </div>
+
+                  {/* PROGRAM/ COURSE */}
+                  <div className="flex-1">
+                    <label
+                      htmlFor="program"
+                      className="block text-xs font-medium text-gray-700 mb-1"
+                    >
+                      Program
+                    </label>
+                    <select
+                      id="program"
+                      className={`w-full px-3 py-1.5 text-sm rounded-lg border ${
+                        errors.yearLevel ? "border-red-500" : "border-gray-300"
+                      } focus:ring-2 focus:ring-primary focus:outline-none`}
+                      {...register("program", { required: "Required" })}
+                      disabled={isSubmitting}
+                    >
+                      <option value="">Select</option>
+                      <option value="Bachelor of Secondary Education">
+                        Bachelor of Secondary Education
+                      </option>
+                      <option value="Bachelor of Technical Vocational Teacher Education">
+                        Bachelor of Technical Vocational Teacher Education
+                      </option>
+                      <option value="BS Business Management">
+                        BS Business Management
+                      </option>
+                      <option value="BS Computer Engineering">
+                        BS Computer Engineering
+                      </option>
+                      <option value="BS Computer Science">
+                        BS Computer Science
+                      </option>
+                      <option value="BS Electrical Engineering">
+                        BS Electrical Engineering
+                      </option>
+                      <option value="BS Hospitality Management">
+                        BS Hospitality Management
+                      </option>
+                      <option value="BS Industrial Technology">
+                        BS Industrial Technology
+                      </option>
+                      <option value="BS Information Technology">
+                        BS Information Technology
+                      </option>
+                    </select>
+                    {errors.program && (
+                      <p className="text-red-600 text-xs mt-1">
+                        {errors.program.message}
+                      </p>
+                    )}
                   </div>
 
                   {/* PASSWORD */}

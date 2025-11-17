@@ -152,12 +152,6 @@ const AdminNavbar = () => {
           {/* TOPBAR */}
           <header className="flex items-center justify-between bg-white border-b border-gray-200 h-16 px-4 shadow-sm">
             <div className="flex items-center gap-3">
-              <button
-                className="btn btn-ghost btn-sm lg:hidden"
-                onClick={() => setCollapsed(!collapsed)}
-              >
-                <Menu size={20} />
-              </button>
               <span className="font-bold text-lg">Admin Dashboard</span>
             </div>
           </header>

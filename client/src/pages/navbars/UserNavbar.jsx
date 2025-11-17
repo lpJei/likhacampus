@@ -16,7 +16,6 @@ const UserNavbar = () => {
 
   const isHomePage = location.pathname === "/home";
 
-  // Check if on a public profile page
   const isPublicProfilePage = location.pathname.startsWith("/profile/");
 
   const logoutUser = async () => {
@@ -35,7 +34,6 @@ const UserNavbar = () => {
     }
   };
 
-  // Show loading only while checking auth, but allow public pages to render
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -44,7 +42,6 @@ const UserNavbar = () => {
     );
   }
 
-  // If no user and NOT on a public profile page, show the navbar with limited options
   const isVisitor = !user;
 
   return (

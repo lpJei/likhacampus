@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AlertTriangle, CircleUserRound, X } from "lucide-react";
+import { AlertTriangle, CircleUserRound, Image, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +14,12 @@ const Settings = () => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarError, setAvatarError] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+
+  // Header image states
+  const [headerPreviewUrl, setHeaderPreviewUrl] = useState(null);
+  const [headerFile, setHeaderFile] = useState(null);
+  const [headerError, setHeaderError] = useState("");
+  const [isUploadingHeader, setIsUploadingHeader] = useState(false);
 
   const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -81,6 +87,10 @@ const Settings = () => {
           if (user.avatar?.url) {
             setPreviewUrl(user.avatar.url);
           }
+
+          if (user.headerImage?.url) {
+            setHeaderPreviewUrl(user.headerImage.url);
+          }
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -122,6 +132,87 @@ const Settings = () => {
     }
   };
 
+  const handleHeaderFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+
+    if (selectedFile) {
+      if (selectedFile.size > 5 * 1024 * 1024) {
+        setHeaderError("File size must be less than 5MB");
+        return;
+      }
+
+      const allowedTypes = [
+        "image/jpeg",
+        "image/jpg",
+        "image/png",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(selectedFile.type)) {
+        setHeaderError("Only JPEG, PNG, and WebP images are allowed");
+        return;
+      }
+
+      setHeaderFile(selectedFile);
+      setHeaderError("");
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setHeaderPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(selectedFile);
+    }
+  };
+
+  const handleHeaderImageUpload = async () => {
+    if (!headerFile) {
+      showAlert("Please select a header image first", "warning");
+      return;
+    }
+
+    setIsUploadingHeader(true);
+
+    const formData = new FormData();
+    formData.append("headerImage", headerFile);
+
+    try {
+      const response = await axios.put(
+        `${API_URL}/user/header-image`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      showAlert("Header image updated successfully!", "success");
+
+      if (response.data.headerImage?.url) {
+        setHeaderPreviewUrl(response.data.headerImage.url);
+        setCurrentUser((prev) => ({
+          ...prev,
+          headerImage: response.data.headerImage,
+        }));
+      }
+
+      setHeaderFile(null);
+      setHeaderError("");
+
+      // Clear file input
+      const fileInput = document.getElementById("headerImageInput");
+      if (fileInput) fileInput.value = "";
+    } catch (error) {
+      console.error("Error uploading header image:", error);
+      showAlert(
+        error.response?.data?.message || "Failed to upload header image",
+        "error"
+      );
+    } finally {
+      setIsUploadingHeader(false);
+    }
+  };
+
   const removeFile = () => {
     setAvatarFile(null);
     if (currentUser?.avatar?.url) {
@@ -135,8 +226,27 @@ const Settings = () => {
     if (fileInput) fileInput.value = "";
   };
 
+  const removeHeaderFile = () => {
+    setHeaderFile(null);
+    if (currentUser?.headerImage?.url) {
+      setHeaderPreviewUrl(currentUser.headerImage.url);
+    } else {
+      setHeaderPreviewUrl(
+        "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920"
+      );
+    }
+    setHeaderError("");
+
+    const fileInput = document.getElementById("headerImageInput");
+    if (fileInput) fileInput.value = "";
+  };
+
   const openFileDialog = () => {
     document.getElementById("avatarInput").click();
+  };
+
+  const openHeaderFileDialog = () => {
+    document.getElementById("headerImageInput").click();
   };
 
   const onSubmitProfile = async (data) => {
@@ -497,6 +607,104 @@ const Settings = () => {
                 )}
               </button>
             </div>
+          </div>
+        </div>
+      </div>
+
+      {/* HEADER IMAGE UPLOADER */}
+      <div className="card bg-base-100 shadow-sm w-full max-w-2xl mx-auto mb-5">
+        <div className="card-body">
+          <h2 className="card-title">Cover Photo</h2>
+          <p>Update your profile cover photo.</p>
+
+          <div className="space-y-4">
+            {/* HEADER IMAGE PREVIEW */}
+            <div className="form-control">
+              <label className="label">
+                <span className="label-text">Current Cover Photo</span>
+              </label>
+
+              <div className="relative w-full h-48 bg-base-200 rounded-lg overflow-hidden">
+                <img
+                  src={
+                    headerPreviewUrl ||
+                    "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=1920"
+                  }
+                  alt="Header preview"
+                  className="w-full h-full object-cover"
+                />
+
+                {headerFile && (
+                  <button
+                    type="button"
+                    onClick={removeHeaderFile}
+                    aria-label="Remove header image"
+                    className="btn btn-circle btn-sm absolute top-2 right-2 shadow bg-base-100"
+                    disabled={isUploadingHeader}
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              {headerFile && (
+                <p className="text-xs text-gray-500 mt-2">
+                  Selected: {headerFile.name}
+                </p>
+              )}
+
+              {headerError && (
+                <p className="text-error text-sm mt-1">{headerError}</p>
+              )}
+
+              <p className="text-xs text-gray-500 mt-2">
+                Recommended size: 1500x500 pixels • Max size: 5MB • Formats:
+                JPG, PNG, WebP
+              </p>
+            </div>
+
+            {/* UPLOAD BUTTONS */}
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={openHeaderFileDialog}
+                className="btn btn-outline gap-2"
+                disabled={isUploadingHeader}
+              >
+                <Image size={18} />
+                Choose Image
+              </button>
+
+              {headerFile && (
+                <button
+                  type="button"
+                  onClick={handleHeaderImageUpload}
+                  className="btn btn-primary gap-2"
+                  disabled={isUploadingHeader}
+                >
+                  {isUploadingHeader ? (
+                    <>
+                      <span className="loading loading-spinner loading-sm"></span>
+                      Uploading...
+                    </>
+                  ) : (
+                    <>
+                      <Image size={18} />
+                      Save Cover Photo
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+
+            <input
+              id="headerImageInput"
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              onChange={handleHeaderFileChange}
+              className="hidden"
+              disabled={isUploadingHeader}
+            />
           </div>
         </div>
       </div>

@@ -83,7 +83,6 @@ export const uploadStudentDatabase = async (req, res) => {
         .json({ message: "No valid student data found in Excel file" });
     }
 
-    // Insert students into database
     let insertedCount = 0;
     let duplicatesSkipped = 0;
 

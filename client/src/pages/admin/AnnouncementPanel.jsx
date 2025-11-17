@@ -229,18 +229,25 @@ const AnnouncementPanel = () => {
                           onClick={() => handleViewClick(a)}
                         />
                       </td>
-                      <td
-                        className="cursor-pointer hover:text-primary transition font-medium"
-                        onClick={() => handleViewClick(a)}
-                      >
-                        {a.title}
-                      </td>
                       <td>
+                        <div
+                          className="max-w-xs truncate cursor-pointer hover:text-primary transition font-medium"
+                          onClick={() => handleViewClick(a)}
+                          title={a.title}
+                        >
+                          {a.title}
+                        </div>
+                      </td>
+                      <td className="whitespace-nowrap">
                         {new Date(a.date || a.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="max-w-xs truncate">{a.content}</td>
                       <td>
-                        <div className="flex gap-2">
+                        <div className="max-w-md truncate" title={a.content}>
+                          {a.content}
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex gap-2 whitespace-nowrap">
                           <button
                             className="btn btn-xs btn-warning"
                             onClick={() => handleEditClick(a)}
@@ -341,7 +348,7 @@ const AnnouncementPanel = () => {
               className="modal-box max-w-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="font-bold text-2xl mb-4">
+              <h3 className="font-bold text-2xl mb-4 break-words">
                 {selectedAnnouncement.title}
               </h3>
               <p className="text-sm text-gray-500 mb-4">
@@ -356,7 +363,7 @@ const AnnouncementPanel = () => {
                   className="w-full h-full object-contain"
                 />
               </figure>
-              <p className="text-base whitespace-pre-wrap">
+              <p className="text-base whitespace-pre-wrap break-words">
                 {selectedAnnouncement.content}
               </p>
               <div className="modal-action">
@@ -379,7 +386,7 @@ const AnnouncementPanel = () => {
           <div className="modal modal-open">
             <div className="modal-box" onClick={(e) => e.stopPropagation()}>
               <h3 className="font-bold text-error">Delete Announcement</h3>
-              <p className="py-2">
+              <p className="py-2 break-words">
                 Are you sure you want to delete "{announcementToDelete?.title}"?{" "}
                 <span className="font-bold text-error">
                   This action cannot be undone!

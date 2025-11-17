@@ -69,22 +69,12 @@ export const searchUsers = async (req, res) => {
 // ===== UPDATE USER PROFILE =====
 export const updateProfile = async (req, res) => {
   try {
-    const { firstName, lastName, bio, headerColor } = req.body;
+    const { firstName, lastName, bio } = req.body;
 
     const updateData = {};
     if (bio !== undefined) updateData.bio = bio;
     if (firstName) updateData.firstName = firstName;
     if (lastName) updateData.lastName = lastName;
-
-    if (headerColor !== undefined) {
-      // Validate hex color format
-      if (!/^#[0-9A-F]{6}$/i.test(headerColor)) {
-        return res.status(400).json({
-          error: "Invalid color format. Must be a hex color (e.g., #5865F2)",
-        });
-      }
-      updateData.headerColor = headerColor;
-    }
 
     if (req.file) {
       console.log("File received:", req.file);
@@ -128,6 +118,50 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     console.error("Error updating profile:", error);
     res.status(500).json({ error: "Server error", details: error.message });
+  }
+};
+
+// ===== UPLOAD HEADER IMAGE =====
+export const uploadHeaderImage = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No image file provided" });
+    }
+
+    const userId = req.session.userId;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.headerImage?.publicId) {
+      try {
+        console.log("Deleting old header image:", user.headerImage.publicId);
+        await cloudinary.uploader.destroy(user.headerImage.publicId);
+      } catch (error) {
+        console.error("Error deleting old header image:", error);
+      }
+    }
+
+    user.headerImage = {
+      url: req.file.path,
+      publicId: req.file.filename,
+    };
+
+    await user.save();
+
+    console.log("Header image updated successfully!");
+    res.status(200).json({
+      message: "Header image updated successfully",
+      headerImage: user.headerImage,
+    });
+  } catch (error) {
+    console.error("Error uploading header image:", error);
+    res.status(500).json({
+      message: "Error uploading header image",
+      details: error.message,
+    });
   }
 };
 
