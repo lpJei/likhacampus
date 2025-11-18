@@ -8,8 +8,6 @@ import UploadProjectModal from "../../components/User/UploadProjectModal";
 import { UserContext } from "../../context/UserContext";
 import { useAlert } from "../../hooks/useAlert.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Profile = () => {
   const { username } = useParams();
   const navigate = useNavigate();
@@ -42,13 +40,12 @@ const Profile = () => {
         setLoading(true);
         setProjectsLoading(true);
 
-        // Fetch public profile (no auth needed)
         const endpoint = username
-          ? `${API_URL}/user/profile/${username}`
-          : `${API_URL}/user/profile`;
+          ? `/user/profile/${username}`
+          : "/user/profile";
 
         const profileResponse = await axios.get(endpoint, {
-          withCredentials: !username, // Only send credentials for own profile (/user/profile)
+          withCredentials: !username,
           timeout: 10000,
         });
 
@@ -59,7 +56,7 @@ const Profile = () => {
         const isOwnProfile = currentUser?._id === profileUserId;
 
         // Fetch projects (public or authenticated based on your backend setup)
-        const projectsEndpoint = `${API_URL}/projects/user/${profileUserId}`;
+        const projectsEndpoint = `/projects/user/${profileUserId}`;
         try {
           const projectsResponse = await axios.get(projectsEndpoint, {
             withCredentials: isOwnProfile, // Only send credentials if viewing own profile
@@ -76,7 +73,7 @@ const Profile = () => {
         if (currentUser) {
           setTaggedLoading(true);
           try {
-            const taggedEndpoint = `${API_URL}/projects/tagged/${profileUserId}`;
+            const taggedEndpoint = `/projects/tagged/${profileUserId}`;
             const taggedResponse = await axios.get(taggedEndpoint, {
               withCredentials: true,
               timeout: 10000,
@@ -95,7 +92,7 @@ const Profile = () => {
         // Only fetch forum posts if user is authenticated
         if (currentUser) {
           try {
-            const forumPostsEndpoint = `${API_URL}/forum/posts/user/${profileUserId}`;
+            const forumPostsEndpoint = `/forum/posts/user/${profileUserId}`;
             const forumPostsResponse = await axios.get(forumPostsEndpoint, {
               withCredentials: true,
               timeout: 10000,
@@ -137,10 +134,9 @@ const Profile = () => {
       }
 
       try {
-        const response = await axios.get(
-          `${API_URL}/assessment/${profile._id}`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`/assessment/${profile._id}`, {
+          withCredentials: true,
+        });
 
         setAssessment(response.data.assessment);
       } catch (error) {

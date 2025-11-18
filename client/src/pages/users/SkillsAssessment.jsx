@@ -16,8 +16,6 @@ import {
 } from "recharts";
 import { useAlert } from "../../hooks/useAlert.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const SkillsAssessment = () => {
   const { showAlert } = useAlert();
   const [currentCategory, setCurrentCategory] = useState(0);
@@ -99,7 +97,7 @@ const SkillsAssessment = () => {
 
   const loadExistingAssessment = async () => {
     try {
-      const response = await axios.get(`${API_URL}/assessment`, {
+      const response = await axios.get("/assessment", {
         withCredentials: true,
       });
 
@@ -197,7 +195,7 @@ const SkillsAssessment = () => {
       );
 
       await axios.post(
-        `${API_URL}/assessment`,
+        "/assessment",
         {
           responses,
           scores,

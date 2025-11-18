@@ -3,8 +3,6 @@ import { Megaphone } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const AnnouncementPanel = () => {
   const { showAlert } = useAlert();
   const [announcements, setAnnouncements] = useState([]);
@@ -32,7 +30,7 @@ const AnnouncementPanel = () => {
   const fetchAnnouncements = async () => {
     try {
       setFetchLoading(true);
-      const response = await axios.get(`${API_URL}/announcements`);
+      const response = await axios.get("/announcements");
       setAnnouncements(response.data || []);
     } catch (error) {
       console.error("Error fetching announcements:", error);
@@ -60,7 +58,7 @@ const AnnouncementPanel = () => {
     formData.append("image", newAnnouncement.imageFile);
 
     try {
-      await axios.post(`${API_URL}/announcements`, formData, {
+      await axios.post(`/announcements`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -96,13 +94,9 @@ const AnnouncementPanel = () => {
     }
 
     try {
-      await axios.put(
-        `${API_URL}/announcements/${currentAnnouncementId}`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
+      await axios.put(`/announcements/${currentAnnouncementId}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
       await fetchAnnouncements();
 
@@ -148,9 +142,7 @@ const AnnouncementPanel = () => {
     setIsDeleting(true);
 
     try {
-      await axios.delete(
-        `${API_URL}/announcements/${announcementToDelete._id}`
-      );
+      await axios.delete(`/announcements/${announcementToDelete._id}`);
       await fetchAnnouncements();
       showAlert("Announcement deleted successfully!", "success");
     } catch (error) {

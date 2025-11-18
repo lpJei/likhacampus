@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useForm } from "react-hook-form";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const EditPostModal = ({ isOpen, onClose, post, onUpdate }) => {
   const {
     register,
@@ -18,7 +16,7 @@ const EditPostModal = ({ isOpen, onClose, post, onUpdate }) => {
   const onSubmit = async (data) => {
     try {
       const response = await axios.patch(
-        `${API_URL}/forum/posts/${post._id}`,
+        `/forum/posts/${post._id}`,
         {
           title: data.title.trim(),
           content: data.content.trim(),

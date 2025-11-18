@@ -3,8 +3,6 @@ import { AlertCircle, FileText, Upload } from "lucide-react";
 import { useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
   const { showAlert } = useAlert();
   const [registrationForm, setRegistrationForm] = useState(null);
@@ -44,11 +42,11 @@ const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
 
     const formData = new FormData();
     formData.append("registrationForm", registrationForm);
-    formData.append("yearLevel", yearLevel); // ADD THIS
+    formData.append("yearLevel", yearLevel);
 
     setUploading(true);
     try {
-      const response = await axios.post(`${API_URL}/auth/reverify`, formData, {
+      const response = await axios.post("/auth/reverify", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });

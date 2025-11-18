@@ -4,8 +4,6 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext.js";
 import { useAlert } from "../../hooks/useAlert.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Archives = () => {
   const { User: currentUser } = useContext(UserContext);
   const { showAlert } = useAlert();
@@ -23,7 +21,7 @@ const Archives = () => {
   const fetchArchivedProjects = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/projects/archived`, {
+      const response = await axios.get("/projects/archived", {
         withCredentials: true,
       });
 
@@ -45,7 +43,7 @@ const Archives = () => {
     try {
       setIsRestoring(true);
       await axios.patch(
-        `${API_URL}/projects/${selectedProject._id}/restore`,
+        `/projects/${selectedProject._id}/restore`,
         {},
         {
           withCredentials: true,
@@ -74,7 +72,7 @@ const Archives = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete(`${API_URL}/projects/${selectedProject._id}`, {
+      await axios.delete(`/projects/${selectedProject._id}`, {
         withCredentials: true,
       });
 

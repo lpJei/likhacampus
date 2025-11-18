@@ -5,8 +5,6 @@ import defaultAvatar from "../../assets/default_avatar.jpg";
 import EllipsisReport from "../../components/User/EllipsisReport.jsx";
 import EditProjectModal from "./EditProjectModal.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ProjectCards = ({
   projects,
   currentUser,
@@ -52,7 +50,7 @@ const ProjectCard = ({
 }) => {
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [localProject, setLocalProject] = useState(project); // ADD localProject state
+  const [localProject, setLocalProject] = useState(project);
 
   const getVideoThumbnail = (videoUrl) => {
     if (!videoUrl) return null;

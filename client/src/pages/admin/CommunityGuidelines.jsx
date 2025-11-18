@@ -3,8 +3,6 @@ import { BookAlert } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const CommunityGuidelines = () => {
   const { showAlert } = useAlert();
   const [guidelines, setGuidelines] = useState([]);
@@ -28,7 +26,7 @@ const CommunityGuidelines = () => {
   const fetchGuidelines = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/guidelines`, {
+      const response = await axios.get("/guidelines", {
         withCredentials: true,
       });
       setGuidelines(response.data.guidelines || []);
@@ -69,7 +67,7 @@ const CommunityGuidelines = () => {
     }
 
     try {
-      const response = await axios.post(`${API_URL}/guidelines`, formData, {
+      const response = await axios.post("/guidelines", formData, {
         withCredentials: true,
       });
 
@@ -102,11 +100,9 @@ const CommunityGuidelines = () => {
     }
 
     try {
-      const response = await axios.put(
-        `${API_URL}/guidelines/${id}`,
-        formData,
-        { withCredentials: true }
-      );
+      const response = await axios.put(`/guidelines/${id}`, formData, {
+        withCredentials: true,
+      });
 
       showAlert("Guideline updated successfully", "success");
       setGuidelines((prev) =>
@@ -126,7 +122,7 @@ const CommunityGuidelines = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete(`${API_URL}/guidelines/${deleteModal}`, {
+      await axios.delete(`/guidelines/${deleteModal}`, {
         withCredentials: true,
       });
 

@@ -9,8 +9,6 @@ import GuidelinesModal from "../../components/User/GuidelinesModal.jsx";
 import TermsNConditionsModal from "../../components/User/TermsNConditionsModal";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Register = () => {
   const modalRef = useRef();
   const navigate = useNavigate();
@@ -97,7 +95,7 @@ const Register = () => {
     formData.append("registrationForm", registrationForm);
 
     try {
-      const response = await axios.post(`${API_URL}/auth/register`, formData, {
+      const response = await axios.post("/auth/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         withCredentials: true,
       });

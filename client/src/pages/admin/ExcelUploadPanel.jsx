@@ -7,8 +7,6 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ExcelUploadPanel = () => {
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
@@ -37,7 +35,7 @@ const ExcelUploadPanel = () => {
       formData.append("excelFile", file);
 
       const response = await axios.post(
-        `${API_URL}/student-database/upload-students`,
+        "/student-database/upload-students",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -72,7 +70,7 @@ const ExcelUploadPanel = () => {
 
   const fetchStudentCount = async () => {
     try {
-      const response = await axios.get(`${API_URL}/auth/students-count`, {
+      const response = await axios.get("/auth/students-count", {
         withCredentials: true,
       });
       setStudentCount(response.data.count);

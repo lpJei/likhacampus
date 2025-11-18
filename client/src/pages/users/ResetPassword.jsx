@@ -14,8 +14,6 @@ import person from "../../assets/Audiobook-pana.png";
 import logo from "../../assets/logo.png";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ResetPassword = () => {
   const { showAlert } = useAlert();
   const { token } = useParams();
@@ -42,9 +40,7 @@ const ResetPassword = () => {
   useEffect(() => {
     const verifyToken = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/auth/verify-reset-token/${token}`
-        );
+        const response = await axios.get(`/auth/verify-reset-token/${token}`);
         if (response.data.valid) {
           setIsValidToken(true);
         } else {
@@ -62,10 +58,9 @@ const ResetPassword = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/auth/reset-password/${token}`,
-        { password: data.password }
-      );
+      const response = await axios.post(`/auth/reset-password/${token}`, {
+        password: data.password,
+      });
 
       if (response.status === 200) {
         showAlert("Password reset successful! Please login.", "success");

@@ -3,8 +3,6 @@ import { Shield, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const UserRoleManagement = () => {
   const { showAlert } = useAlert();
   const [users, setUsers] = useState([]);
@@ -19,7 +17,7 @@ const UserRoleManagement = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/admin/users`, {
+      const response = await axios.get("/admin/users", {
         withCredentials: true,
       });
 
@@ -40,7 +38,7 @@ const UserRoleManagement = () => {
 
     try {
       const response = await axios.patch(
-        `${API_URL}/admin/users/${userId}/role`,
+        `/admin/users/${userId}/role`,
         { role: newRole },
         {
           withCredentials: true,

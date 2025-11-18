@@ -7,8 +7,6 @@ import logo from "../../assets/logo.png";
 import FeaturedArtist from "../../components/User/FeaturedArtist.jsx";
 import { useScrollToHash } from "../../hooks/useScrollToHash.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Home = () => {
   useScrollToHash();
   const navigate = useNavigate();
@@ -27,7 +25,7 @@ const Home = () => {
   const fetchStats = async () => {
     try {
       setStatsLoading(true);
-      const response = await axios.get(`${API_URL}/stats`);
+      const response = await axios.get("/stats");
       setStats(response.data.stats);
     } catch (error) {
       console.error("Error fetching stats:", error);
@@ -39,7 +37,7 @@ const Home = () => {
 
   const fetchAnnouncements = async () => {
     try {
-      const response = await axios.get(`${API_URL}/announcements`);
+      const response = await axios.get("/announcements");
       setAnnouncements(response.data.slice(0, 6));
     } catch (error) {
       console.error("Error fetching announcements:", error);

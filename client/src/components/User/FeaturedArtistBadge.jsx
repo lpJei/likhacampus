@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const FeaturedArtistBadge = ({ userId }) => {
   const [isFeatured, setIsFeatured] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -12,10 +10,9 @@ const FeaturedArtistBadge = ({ userId }) => {
 
     const checkFeaturedStatus = async () => {
       try {
-        const response = await axios.get(
-          `${API_URL}/featured-artist/check/${userId}`,
-          { withCredentials: true }
-        );
+        const response = await axios.get(`/featured-artist/check/${userId}`, {
+          withCredentials: true,
+        });
         setIsFeatured(response.data.isFeatured);
       } catch (error) {
         console.error("Error checking featured status:", error);

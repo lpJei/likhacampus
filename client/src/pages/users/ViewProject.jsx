@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ViewProject = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
@@ -18,7 +16,7 @@ const ViewProject = () => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await axios.get(`${API_URL}/projects/${projectId}`, {
+        const response = await axios.get(`/projects/${projectId}`, {
           withCredentials: true,
         });
 

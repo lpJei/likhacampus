@@ -6,8 +6,6 @@ import { useAlert } from "../../hooks/useAlert.js";
 import ProjectUploader from "./ProjectUploader.jsx";
 import SkillDropdown from "./SkillDropdown.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const UploadProjectModal = ({ show, onHide, onSave }) => {
   const { showAlert } = useAlert();
   const [isUploading, setIsUploading] = useState(false);
@@ -56,7 +54,7 @@ const UploadProjectModal = ({ show, onHide, onSave }) => {
     setIsSearching(true);
     try {
       const response = await axios.get(
-        `${API_URL}/user/search?q=${encodeURIComponent(query)}`,
+        `/user/search?q=${encodeURIComponent(query)}`,
         {
           withCredentials: true,
         }
@@ -122,7 +120,7 @@ const UploadProjectModal = ({ show, onHide, onSave }) => {
         console.log(pair[0] + ": " + pair[1]);
       }
 
-      const response = await axios.post(`${API_URL}/projects`, uploadData, {
+      const response = await axios.post("/projects", uploadData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",

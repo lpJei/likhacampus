@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ProjectViolations = () => {
   const { showAlert } = useAlert();
   const [reportedProjects, setReportedProjects] = useState([]);
@@ -17,7 +15,7 @@ const ProjectViolations = () => {
   const fetchReportedProjects = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/projects/admin/reported`, {
+      const response = await axios.get("/projects/admin/reported", {
         withCredentials: true,
       });
 
@@ -38,7 +36,7 @@ const ProjectViolations = () => {
     try {
       setActionLoading(projectId);
       await axios.post(
-        `${API_URL}/projects/admin/${projectId}/restore`,
+        `/projects/admin/${projectId}/restore`,
         {},
         { withCredentials: true }
       );
@@ -61,7 +59,7 @@ const ProjectViolations = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete(`${API_URL}/projects/admin/${deleteModal}/delete`, {
+      await axios.delete(`/projects/admin/${deleteModal}/delete`, {
         withCredentials: true,
       });
 

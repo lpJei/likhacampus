@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ViewAllNotifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +13,7 @@ const ViewAllNotifications = () => {
   const fetchNotifications = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/notifications?limit=100`, {
+      const response = await axios.get("/notifications?limit=100", {
         withCredentials: true,
       });
       setNotifications(response.data.notifications);
@@ -35,7 +33,7 @@ const ViewAllNotifications = () => {
   const markAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        `${API_URL}/notifications/${notificationId}/read`,
+        `/notifications/${notificationId}/read`,
         {},
         { withCredentials: true }
       );
@@ -53,7 +51,7 @@ const ViewAllNotifications = () => {
   const markAllAsRead = async () => {
     try {
       await axios.patch(
-        `${API_URL}/notifications/read-all`,
+        "/notifications/read-all",
         {},
         { withCredentials: true }
       );
@@ -69,7 +67,7 @@ const ViewAllNotifications = () => {
   const deleteNotification = async (notificationId, event) => {
     event.stopPropagation();
     try {
-      await axios.delete(`${API_URL}/notifications/${notificationId}`, {
+      await axios.delete("/notifications/${notificationId}", {
         withCredentials: true,
       });
       const deletedNotif = notifications.find((n) => n._id === notificationId);

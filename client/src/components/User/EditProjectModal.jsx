@@ -5,8 +5,6 @@ import { useForm } from "react-hook-form";
 import ProjectUploader from "./ProjectUploader.jsx";
 import SkillDropdown from "./SkillDropdown.jsx";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const EditProjectModal = ({ show, onHide, project, onUpdate }) => {
   const [error, setError] = useState("");
   const [files, setFiles] = useState([]);
@@ -68,7 +66,7 @@ const EditProjectModal = ({ show, onHide, project, onUpdate }) => {
     setIsSearching(true);
     try {
       const response = await axios.get(
-        `${API_URL}/user/search?q=${encodeURIComponent(query)}`,
+        `/user/search?q=${encodeURIComponent(query)}`,
         {
           withCredentials: true,
         }
@@ -130,7 +128,7 @@ const EditProjectModal = ({ show, onHide, project, onUpdate }) => {
       }
 
       const response = await axios.patch(
-        `${API_URL}/projects/${project._id}`,
+        `/projects/${project._id}`,
         uploadData,
         {
           withCredentials: true,

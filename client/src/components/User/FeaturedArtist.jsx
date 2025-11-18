@@ -3,8 +3,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const FeaturedArtist = () => {
   const navigate = useNavigate();
   const [featuredArtist, setFeaturedArtist] = useState(null);
@@ -18,7 +16,7 @@ const FeaturedArtist = () => {
   const fetchFeaturedArtist = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/featured-artist/current`, {
+      const response = await axios.get(`/featured-artist/current`, {
         withCredentials: true,
       });
 
@@ -48,7 +46,7 @@ const FeaturedArtist = () => {
   }
 
   if (error) {
-    return null; // Silently fail - don't show error on home page
+    return null;
   }
 
   if (!featuredArtist) {

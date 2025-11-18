@@ -4,8 +4,6 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAlert } from "../../hooks/useAlert.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const VerifyEmailNotice = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,7 +19,7 @@ const VerifyEmailNotice = () => {
 
     setIsResending(true);
     try {
-      const response = await axios.post(`${API_URL}/auth/resend-verification`, {
+      const response = await axios.post("/auth/resend-verification", {
         email,
       });
       showAlert(response.data.message, "success");

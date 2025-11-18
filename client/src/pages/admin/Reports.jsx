@@ -2,8 +2,6 @@ import axios from "axios";
 import { BarChart2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Reports = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -15,7 +13,7 @@ const Reports = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/admin/stats`, {
+      const response = await axios.get("/admin/stats", {
         withCredentials: true,
       });
 

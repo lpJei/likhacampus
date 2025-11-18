@@ -8,8 +8,6 @@ import logo from "../../assets/logo.png";
 import { UserContext } from "../../context/UserContext";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Login = () => {
   const { showAlert } = useAlert();
   const { setUser } = useContext(UserContext);
@@ -31,7 +29,7 @@ const Login = () => {
     setBackendError("");
 
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, data, {
+      const response = await axios.post("/auth/login", data, {
         withCredentials: true,
       });
 

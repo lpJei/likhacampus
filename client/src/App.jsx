@@ -84,7 +84,7 @@ export default function App() {
 
   useEffect(() => {
     axios
-      .get("/api/user/me", { withCredentials: true })
+      .get("/user/me", { withCredentials: true })
       .then((response) => {
         console.log("User authenticated.");
         setUser(response.data.user);

@@ -5,8 +5,6 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import GuidelinesModal from "../../components/User/GuidelinesModal.jsx";
 import { useAlert } from "../../hooks/useAlert.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const VerifyEmailSuccess = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -27,9 +25,7 @@ const VerifyEmailSuccess = () => {
       }
 
       try {
-        const response = await axios.get(
-          `${API_URL}/auth/verify-email?token=${token}`
-        );
+        const response = await axios.get(`/auth/verify-email?token=${token}`);
         setVerificationStatus("success");
         showAlert(response.data.message, "success");
 

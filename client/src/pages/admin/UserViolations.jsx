@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const UserViolations = () => {
   const { showAlert } = useAlert();
   const [reportedUsers, setReportedUsers] = useState([]);
@@ -23,7 +21,7 @@ const UserViolations = () => {
   const fetchReportedUsers = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/admin/reported-users`, {
+      const response = await axios.get("/admin/reported-users", {
         withCredentials: true,
       });
 
@@ -40,7 +38,7 @@ const UserViolations = () => {
     try {
       setActionLoading(userId);
       await axios.post(
-        `${API_URL}/admin/users/${userId}/dismiss-reports`,
+        `/admin/users/${userId}/dismiss-reports`,
         {},
         { withCredentials: true }
       );
@@ -72,7 +70,7 @@ const UserViolations = () => {
     try {
       setIsProcessing(true);
       await axios.post(
-        `${API_URL}/admin/users/${actionModal}/take-action`,
+        `/admin/users/${actionModal}/take-action`,
         {
           action: selectedAction,
           reason: actionReason,

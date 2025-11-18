@@ -5,8 +5,6 @@ import ForumSortDropdown from "../../components/User/ForumSortDropdown";
 import { useAlert } from "../../hooks/useAlert";
 import { useScrollToHash } from "../../hooks/useScrollToHash";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Forum = () => {
   useScrollToHash();
   const { showAlert } = useAlert();
@@ -19,7 +17,7 @@ const Forum = () => {
 
   useEffect(() => {
     axios
-      .get(`${API_URL}/user/me`, {
+      .get("/user/me", {
         withCredentials: true,
       })
       .then((response) => {
@@ -38,12 +36,9 @@ const Forum = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(
-        `${API_URL}/forum/posts?sortBy=${sortBy}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`/forum/posts?sortBy=${sortBy}`, {
+        withCredentials: true,
+      });
 
       setPosts(response.data.posts || []);
     } catch (error) {
@@ -65,7 +60,7 @@ const Forum = () => {
 
     try {
       const response = await axios.post(
-        `${API_URL}/forum/posts`,
+        "/forum/posts",
         {
           title: newPostTitle,
           content: newPostContent,

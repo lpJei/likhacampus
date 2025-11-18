@@ -3,8 +3,6 @@ import { Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const UserContributions = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -19,7 +17,7 @@ const UserContributions = () => {
   const fetchContributions = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/contributions/stats`, {
+      const response = await axios.get("/contributions/stats", {
         withCredentials: true,
       });
       setUsers(response.data.users);

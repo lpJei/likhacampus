@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const NotificationDropdown = () => {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -15,7 +13,7 @@ const NotificationDropdown = () => {
 
   const fetchNotifications = async () => {
     try {
-      const response = await axios.get(`${API_URL}/notifications`, {
+      const response = await axios.get("/notifications", {
         withCredentials: true,
       });
       setNotifications(response.data.notifications);
@@ -44,7 +42,7 @@ const NotificationDropdown = () => {
   const markAsRead = async (notificationId) => {
     try {
       await axios.patch(
-        `${API_URL}/notifications/${notificationId}/read`,
+        `/notifications/${notificationId}/read`,
         {},
         {
           withCredentials: true,
@@ -65,7 +63,7 @@ const NotificationDropdown = () => {
     try {
       setLoading(true);
       await axios.patch(
-        `${API_URL}/notifications/read-all`,
+        "/notifications/read-all",
         {},
         {
           withCredentials: true,
@@ -146,7 +144,7 @@ const NotificationDropdown = () => {
   const deleteNotification = async (notificationId, event) => {
     event.stopPropagation();
     try {
-      await axios.delete(`${API_URL}/notifications/${notificationId}`, {
+      await axios.delete(`/notifications/${notificationId}`, {
         withCredentials: true,
       });
       const deletedNotif = notifications.find((n) => n._id === notificationId);

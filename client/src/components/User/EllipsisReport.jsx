@@ -2,8 +2,6 @@ import axios from "axios";
 import { useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const EllipsisReport = ({
   type,
   targetId,
@@ -23,25 +21,25 @@ const EllipsisReport = ({
   const getEndpoints = () => {
     if (type === "Post") {
       return {
-        delete: `${API_URL}/forum/posts/${targetId}`,
-        report: `${API_URL}/forum/posts/${targetId}/report`,
+        delete: `/forum/posts/${targetId}`,
+        report: `/forum/posts/${targetId}/report`,
         edit: `/forum/edit/${targetId}`,
       };
     } else if (type === "Project") {
       return {
-        delete: `${API_URL}/projects/${targetId}`,
+        delete: `/projects/${targetId}`,
         edit: `/projects/edit/${targetId}`,
-        report: `${API_URL}/projects/${targetId}/report`,
-        archives: `${API_URL}/projects/${targetId}/archive`,
+        report: `/projects/${targetId}/report`,
+        archives: `/projects/${targetId}/archive`,
       };
     } else if (type === "Comment") {
       return {
-        delete: `${API_URL}/forum/posts/${postId}/comments/${targetId}`,
-        report: `${API_URL}/forum/comments/${targetId}/report`,
+        delete: `/forum/posts/${postId}/comments/${targetId}`,
+        report: `/forum/comments/${targetId}/report`,
       };
     } else if (type === "User") {
       return {
-        report: `${API_URL}/user/${targetId}/report`,
+        report: `/user/${targetId}/report`,
       };
     }
     return null;
@@ -73,7 +71,7 @@ const EllipsisReport = ({
         }
       } else if (type === "Project") {
         await axios.post(
-          `${API_URL}/projects/${targetId}/report`,
+          `/projects/${targetId}/report`,
           { reason: reportReason, details: reportDetails },
           { withCredentials: true }
         );
@@ -99,7 +97,7 @@ const EllipsisReport = ({
         setReportDetails("");
       } else {
         await axios.post(
-          `${API_URL}/reports`,
+          "/reports",
           {
             targetId,
             targetType: type,

@@ -7,8 +7,6 @@ import person from "../../assets/Audiobook-pana.png";
 import logo from "../../assets/logo.png";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ForgotPassword = () => {
   const { showAlert } = useAlert();
   const [emailSent, setEmailSent] = useState(false);
@@ -26,10 +24,7 @@ const ForgotPassword = () => {
 
   const onSubmit = async (data) => {
     try {
-      const response = await axios.post(
-        `${API_URL}/auth/forgot-password`,
-        data
-      );
+      const response = await axios.post("/auth/forgot-password", data);
 
       if (response.status === 200) {
         setSubmittedEmail(data.email);

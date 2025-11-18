@@ -6,8 +6,6 @@ import NotificationDropdown from "../../components/User/NotificationDropdown";
 import { UserContext } from "../../context/UserContext";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const UserNavbar = () => {
   const navigate = useNavigate();
   const { showAlert } = useAlert();
@@ -21,7 +19,7 @@ const UserNavbar = () => {
   const logoutUser = async () => {
     try {
       await axios.post(
-        `${API_URL}/auth/logout`,
+        "/auth/logout",
         {},
         {
           withCredentials: true,

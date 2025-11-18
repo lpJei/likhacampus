@@ -4,8 +4,6 @@ import { useEffect, useState } from "react";
 import defaultAvatar from "../../assets/default_avatar.jpg";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ForumViolations = () => {
   const { showAlert } = useAlert();
   const [flaggedPosts, setFlaggedPosts] = useState([]);
@@ -20,7 +18,7 @@ const ForumViolations = () => {
   const fetchFlaggedContent = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/forum/admin/flagged`, {
+      const response = await axios.get("/forum/admin/flagged", {
         withCredentials: true,
       });
 
@@ -42,7 +40,7 @@ const ForumViolations = () => {
     try {
       setActionLoading(postId);
       await axios.post(
-        `${API_URL}/forum/admin/posts/${postId}/restore`,
+        `/forum/admin/posts/${postId}/restore`,
         {},
         {
           withCredentials: true,
@@ -67,15 +65,12 @@ const ForumViolations = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete(
-        `${API_URL}/forum/admin/posts/${deletePostModal}/delete`,
-        {
-          data: {
-            reason: "Violation of community guidelines",
-          },
-          withCredentials: true,
-        }
-      );
+      await axios.delete(`/forum/admin/posts/${deletePostModal}/delete`, {
+        data: {
+          reason: "Violation of community guidelines",
+        },
+        withCredentials: true,
+      });
 
       showAlert("Post deleted permanently", "success");
       setFlaggedPosts(flaggedPosts.filter((p) => p._id !== deletePostModal));
@@ -95,7 +90,7 @@ const ForumViolations = () => {
     try {
       setActionLoading(commentId);
       await axios.post(
-        `${API_URL}/forum/admin/comments/${commentId}/restore`,
+        `/forum/admin/comments/${commentId}/restore`,
         {},
         {
           withCredentials: true,
@@ -120,15 +115,12 @@ const ForumViolations = () => {
 
     try {
       setIsDeleting(true);
-      await axios.delete(
-        `${API_URL}/forum/admin/comments/${deleteCommentModal}/delete`,
-        {
-          data: {
-            reason: "Violation of community guidelines",
-          },
-          withCredentials: true,
-        }
-      );
+      await axios.delete(`/forum/admin/comments/${deleteCommentModal}/delete`, {
+        data: {
+          reason: "Violation of community guidelines",
+        },
+        withCredentials: true,
+      });
 
       showAlert("Comment deleted permanently", "success");
       setFlaggedComments(

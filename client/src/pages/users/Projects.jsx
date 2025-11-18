@@ -5,8 +5,6 @@ import SkillDropdown from "../../components/User/SkillDropdown";
 import { UserContext } from "../../context/UserContext";
 import { useScrollToHash } from "../../hooks/useScrollToHash.js";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Projects = () => {
   useScrollToHash();
   const { user: currentUser } = useContext(UserContext);
@@ -21,7 +19,7 @@ const Projects = () => {
     const fetchProjects = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/projects`, {
+        const response = await axios.get("/projects", {
           withCredentials: true,
         });
 

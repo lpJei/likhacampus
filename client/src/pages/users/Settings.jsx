@@ -5,8 +5,6 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const Settings = () => {
   const { showAlert } = useAlert();
   const navigate = useNavigate();
@@ -15,7 +13,6 @@ const Settings = () => {
   const [avatarError, setAvatarError] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
 
-  // Header image states
   const [headerPreviewUrl, setHeaderPreviewUrl] = useState(null);
   const [headerFile, setHeaderFile] = useState(null);
   const [headerError, setHeaderError] = useState("");
@@ -70,7 +67,7 @@ const Settings = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/user/me`, {
+        const response = await axios.get("/user/me", {
           withCredentials: true,
         });
 
@@ -175,16 +172,12 @@ const Settings = () => {
     formData.append("headerImage", headerFile);
 
     try {
-      const response = await axios.put(
-        `${API_URL}/user/header-image`,
-        formData,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
+      const response = await axios.put("/user/header-image", formData, {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       showAlert("Header image updated successfully!", "success");
 
@@ -266,7 +259,7 @@ const Settings = () => {
     }
 
     try {
-      const response = await axios.patch(`${API_URL}/user/settings`, formData, {
+      const response = await axios.patch("/user/settings", formData, {
         withCredentials: true,
         headers: {
           "Content-Type": "multipart/form-data",
@@ -315,7 +308,7 @@ const Settings = () => {
   const onSubmitPassword = async (data) => {
     try {
       const response = await axios.put(
-        `${API_URL}/user/change-password`,
+        "/user/change-password",
         {
           currentPassword: data.currentPassword,
           newPassword: data.newPassword,
@@ -360,7 +353,7 @@ const Settings = () => {
     setIsProcessing(true);
     try {
       const response = await axios.post(
-        `${API_URL}/user/account/deactivate`,
+        "/user/account/deactivate",
         {},
         { withCredentials: true }
       );
@@ -387,7 +380,7 @@ const Settings = () => {
   const handleDeleteAccount = async (data) => {
     setIsProcessing(true);
     try {
-      const response = await axios.delete(`${API_URL}/user/account/delete`, {
+      const response = await axios.delete("/user/account/delete", {
         withCredentials: true,
         data: { password: data.confirmPassword },
       });

@@ -3,8 +3,6 @@ import { AlertCircle, Calendar, Save, University } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const SemesterSettings = () => {
   const { showAlert } = useAlert();
   const [loading, setLoading] = useState(true);
@@ -27,7 +25,7 @@ const SemesterSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get(`${API_URL}/admin/settings/semester`, {
+      const response = await axios.get("/admin/settings/semester", {
         withCredentials: true,
       });
       setSettings(response.data.settings);
@@ -65,11 +63,9 @@ const SemesterSettings = () => {
 
     setSaving(true);
     try {
-      const response = await axios.put(
-        `${API_URL}/admin/settings/semester`,
-        formData,
-        { withCredentials: true }
-      );
+      const response = await axios.put("/admin/settings/semester", formData, {
+        withCredentials: true,
+      });
 
       setSettings(response.data.settings);
       showAlert("Semester settings updated successfully!", "success");

@@ -1,8 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const GuidelinesModal = ({ isOpen, onClose, onAccept }) => {
   const [guidelines, setGuidelines] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -17,7 +15,7 @@ const GuidelinesModal = ({ isOpen, onClose, onAccept }) => {
   const fetchGuidelines = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/guidelines/active`);
+      const response = await axios.get(`/guidelines/active`);
       setGuidelines(response.data.guidelines || []);
     } catch (error) {
       console.error("Error fetching guidelines:", error);

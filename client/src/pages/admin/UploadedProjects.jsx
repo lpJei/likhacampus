@@ -3,8 +3,6 @@ import { Eye, Folder, FolderOpen, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ProjectManagementPanel = () => {
   const { showAlert } = useAlert();
   const [projects, setProjects] = useState([]);
@@ -22,7 +20,7 @@ const ProjectManagementPanel = () => {
   const fetchProjects = async () => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/admin/projects`, {
+      const response = await axios.get("/admin/projects", {
         withCredentials: true,
       });
 

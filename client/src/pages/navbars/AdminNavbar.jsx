@@ -18,8 +18,6 @@ import { useState } from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { useAlert } from "../../hooks/useAlert";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const AdminNavbar = () => {
   const { showAlert } = useAlert();
   const [collapsed, setCollapsed] = useState(false);
@@ -87,7 +85,7 @@ const AdminNavbar = () => {
   const logoutAdmin = async () => {
     try {
       await axios.post(
-        `${API_URL}/auth/logout`,
+        "/auth/logout",
         {},
         {
           withCredentials: true,

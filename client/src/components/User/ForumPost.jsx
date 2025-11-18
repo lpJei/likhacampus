@@ -8,8 +8,6 @@ import { useAlert } from "../../hooks/useAlert";
 import EditPostModal from "../User/EditPostModal";
 import EllipsisReport from "./EllipsisReport";
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
-
 const ForumPost = ({
   _id,
   author,
@@ -96,12 +94,9 @@ const ForumPost = ({
   const fetchComments = async () => {
     setIsLoadingComments(true);
     try {
-      const response = await axios.get(
-        `${API_URL}/forum/posts/${_id}/comments`,
-        {
-          withCredentials: true,
-        }
-      );
+      const response = await axios.get(`/forum/posts/${_id}/comments`, {
+        withCredentials: true,
+      });
 
       setPostComments(response.data.comments || []);
     } catch (error) {
@@ -114,7 +109,7 @@ const ForumPost = ({
   const loadMoreReplies = async (commentId, currentReplies) => {
     try {
       const response = await axios.get(
-        `${API_URL}/forum/comments/${commentId}/replies?skip=${currentReplies.length}&limit=10`,
+        `/forum/comments/${commentId}/replies?skip=${currentReplies.length}&limit=10`,
         {
           withCredentials: true,
         }
@@ -147,7 +142,7 @@ const ForumPost = ({
 
     try {
       const response = await axios.post(
-        `${API_URL}/forum/posts/${_id}/upvote`,
+        `/forum/posts/${_id}/upvote`,
         {},
         {
           withCredentials: true,
@@ -172,7 +167,7 @@ const ForumPost = ({
 
     try {
       const response = await axios.post(
-        `${API_URL}/forum/posts/${_id}/comments`,
+        `/forum/posts/${_id}/comments`,
         {
           content: data.comment.trim(),
         },
@@ -225,7 +220,7 @@ const ForumPost = ({
 
     try {
       const response = await axios.post(
-        `${API_URL}/forum/posts/${_id}/comments`,
+        `/forum/posts/${_id}/comments`,
         {
           content: data.reply.trim(),
           parentCommentId: parentCommentId,
@@ -265,7 +260,7 @@ const ForumPost = ({
   const onEditSubmit = async (data, commentId, isReply, parentId) => {
     try {
       const response = await axios.put(
-        `${API_URL}/forum/comments/${commentId}`,
+        `/forum/comments/${commentId}`,
         {
           content: data.editContent.trim(),
         },
