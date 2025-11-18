@@ -9,7 +9,7 @@ const ReVerificationModal = ({ isOpen, reason, onSuccess }) => {
   const { showAlert } = useAlert();
   const [registrationForm, setRegistrationForm] = useState(null);
   const [fileName, setFileName] = useState(null);
-  const [yearLevel, setYearLevel] = useState(""); // ADD THIS
+  const [yearLevel, setYearLevel] = useState("");
   const [uploading, setUploading] = useState(false);
 
   const handleFileChange = (e) => {
