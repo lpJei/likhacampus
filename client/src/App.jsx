@@ -70,7 +70,8 @@ const UserRoleManagement = lazy(
 );
 const UserViolations = lazy(() => import("./pages/admin/UserViolations.jsx"));
 
-axios.defaults.baseURL = "http://localhost:5000";
+axios.defaults.baseURL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 axios.defaults.withCredentials = true;
 
 export default function App() {
